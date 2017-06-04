@@ -1,4 +1,5 @@
 import java.rmi.*;			
+import java.util.Arrays;
 
 public class Client
 {
@@ -6,19 +7,19 @@ public class Client
 	{
 		if( arg.length < 6 )
 		{					
-			System.out.println("Please specify hostname and x1, y1, x2, y2, step of the mandelbrotSet");
+			System.out.println("Please specify hostname and x1, x2, y1, y2, step of the mandelbrotSet");
 			return;
 		}
 		
 		String	hostName = arg[ 0 ];	/* Server */
 		double x1 = Float.parseFloat(arg[1]);
-		double y1 = Float.parseFloat(arg[2]);
-		double x2 = Float.parseFloat(arg[3]);
+		double x2 = Float.parseFloat(arg[2]);
+		double y1 = Float.parseFloat(arg[3]);
 		double y2 = Float.parseFloat(arg[4]);
 		double step = Float.parseFloat(arg[5]);
 
-		int cols = (int)Math.ceil((x2-x1)/step);
-		int rows = (int)Math.ceil((y2-y1)/step);
+		int cols = (int)Math.floor((x2-x1)/step) + 1;
+		int rows = (int)Math.floor((y2-y1)/step) + 1;
 		
 		try
 		{
@@ -32,7 +33,7 @@ public class Client
 			   * by calling lookup method of Naming class and providing server's URL.
 			   */
 			IMandelbrotResolver remoteObj = (IMandelbrotResolver) Naming.lookup("//"+hostName+(arg.length > 6?":"
-			 + arg[6]:"")+"/MandelbrotTest");
+			 + arg[6]:"")+"/mandelbrot");
 
 				/* prepare "parameters" RMI argument object */
 
@@ -57,14 +58,8 @@ public class Client
 			/*** Step 4:
 			   * Print results obtained by RMI.
 			   */
-			for(int row=0; row<rows; ++row)
-			{
-				for(int col=0; col<cols; ++col)
-				{
-					System.out.print("" + result.mandelbrotValues[row][col]);	
-				}
-				System.out.println();	
-			}
+
+			System.out.println(Arrays.deepToString(result.mandelbrotValues));
 		}
 		catch( Exception e )
 		{

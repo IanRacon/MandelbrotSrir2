@@ -18,15 +18,7 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    * (named i.e. compute) performing actual calculations on 
    * vector[], Power, Mean[] arguments and returning dummy errorCode.
    */
-    public MandelbrotTest(double minx, double maxx, double miny, double maxy, double step) {
-        this.minx = minx;
-        this.maxx = maxx;
-        this.miny = miny;
-        this.maxy = maxy;
-        this.step = step;
-	}
-
-   public native int[][] compute();
+   //public native int[][] compute();
    //public native int[][] compute(double x1, double x2, double y1, double y2, double step);
 
 	/* implement method declared in IMandelbrotResolver interface */
@@ -42,7 +34,7 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
     {
 		MandelbrotTest man = new MandelbrotTest(chunkParams.x1, chunkParams.y1, chunkParams.x2, chunkParams.y2, chunkParams.step); 
 		ChunkData chunkData = new ChunkData();
-        chunkData.mandelbrotValues = compute();
+        chunkData.mandelbrotValues = man.compute();
         return chunkData;
     }
     
@@ -76,6 +68,5 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    * by rebinding //server_host_name/path/name with new object of this class.
    */
     Naming.rebind("//"+hostName+(args.length>0?":"+args[0]:"")+"/mandelbrot", new Server());
-
 	}
 }

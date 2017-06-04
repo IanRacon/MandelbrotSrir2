@@ -10,7 +10,7 @@ public class MandelbrotTest {
     private final static int maxiters = 999;
     
     static {
-        System.loadLibrary("libmandelbrot");
+        System.loadLibrary("MandelbrotTest");
     }
     
     public MandelbrotTest(double minx, double maxx, double miny, double maxy, double step) {

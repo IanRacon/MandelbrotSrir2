@@ -8,7 +8,7 @@ public class MandelbrotTest {
     private final static int maxiters = 999;
     
     static {
-        System.loadLibrary("MandelbrotTest");
+        System.loadLibrary("libmandelbrot");
     }
     
     public MandelbrotTest(double minx, double maxx, double miny, double maxy, double step) {
@@ -24,6 +24,7 @@ public class MandelbrotTest {
     public static void main(String[] args) {
         MandelbrotTest man = new MandelbrotTest(-2, 1, -1, 1, 0.1);
         int[][] result = man.compute();
+        System.out.println(Arrays.deepToString(result));
     }
     
 }

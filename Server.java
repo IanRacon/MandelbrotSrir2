@@ -18,8 +18,6 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    * (named i.e. compute) performing actual calculations on 
    * vector[], Power, Mean[] arguments and returning dummy errorCode.
    */
-
-
     public MandelbrotTest(double minx, double maxx, double miny, double maxy, double step) {
         this.minx = minx;
         this.maxx = maxx;

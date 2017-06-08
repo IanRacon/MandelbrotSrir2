@@ -18,8 +18,6 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    * (named i.e. compute) performing actual calculations on 
    * vector[], Power, Mean[] arguments and returning dummy errorCode.
    */
-   //public native int[][] compute();
-   //public native int[][] compute(double x1, double x2, double y1, double y2, double step);
 
 	/* implement method declared in IMandelbrotResolver interface */
 
@@ -32,7 +30,7 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    */
     public ChunkData mandelbrot(ChunkCoords chunkParams) throws RemoteException
     {
-		MandelbrotTest man = new MandelbrotTest(chunkParams.x1, chunkParams.y1, chunkParams.x2, chunkParams.y2, chunkParams.step); 
+		MandelbrotTest man = new MandelbrotTest(chunkParams.x1, chunkParams.x2, chunkParams.y1, chunkParams.y2, chunkParams.step); 
 		ChunkData chunkData = new ChunkData();
         chunkData.mandelbrotValues = man.compute();
         return chunkData;

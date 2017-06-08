@@ -1,5 +1,7 @@
 import java.rmi.*;			
 import java.util.Arrays;
+import java.io.PrintWriter;
+import java.io.*;
 
 public class Client
 {
@@ -32,39 +34,83 @@ public class Client
 			   * Get reference to the stub object (obj) representing RMI interface
 			   * by calling lookup method of Naming class and providing server's URL.
 			   */
-			IMandelbrotResolver remoteObj = (IMandelbrotResolver) Naming.lookup("//"+hostName+(arg.length > 6?":"
+			IMandelbrotResolver remoteObj1 = (IMandelbrotResolver) Naming.lookup("//"+hostName+(arg.length > 6?":"
 			 + arg[6]:"")+"/mandelbrot");
+
+			IMandelbrotResolver remoteObj2 = (IMandelbrotResolver) Naming.lookup("//"+hostName+(arg.length > 7?":"
+			 + arg[7]:"")+"/mandelbrot");
 
 				/* prepare "parameters" RMI argument object */
 
 			/*** Step 2:
 			   * Prepare ChunkCoords "parameters".
 			   */
-			ChunkCoords chunkParams = new ChunkCoords();
-			chunkParams.x1 = x1;
-			chunkParams.y1 = y1;
-			chunkParams.x2 = x2;
-			chunkParams.y2 = y2;
-			chunkParams.step = step;
-
+			ChunkCoords chunkParams1 = new ChunkCoords();
+			chunkParams1.x1 = x1;
+			chunkParams1.y1 = y1;
+			chunkParams1.x2 = x2;
+			chunkParams1.y2 = y2;
+			chunkParams1.step = step;
+/*
+			ChunkCoords chunkParams2 = new ChunkCoords();
+			chunkParams2.x1 = (x2-x1)/2;
+			chunkParams2.y1 = y1;
+			chunkParams2.x2 = x2;
+			chunkParams2.y2 = y2;
+			chunkParams2.step = step;
+*/
 			/* execute RMI call */
 			/*** Step 3:
 			   * Call remote method of obj object. 
 			   */
-			ChunkData result;
-			result = remoteObj.mandelbrot(chunkParams);
+			ChunkData result1;
+//			ChunkData result2;
+			result1 = remoteObj1.mandelbrot(chunkParams1);
+//			result2 = remoteObj2.mandelbrot(chunkParams2);
 
 			/* print results from returned parameters object */
 			/*** Step 4:
 			   * Print results obtained by RMI.
 			   */
 
-			System.out.println(Arrays.deepToString(result.mandelbrotValues));
+			System.out.println(Arrays.deepToString(result1.mandelbrotValues));
+			//System.out.println(Arrays.deepToString(result2.mandelbrotValues));
+			exportBoardToFile(result1, x1, x2, y1, y2, step, rows, cols); 
 		}
 		catch( Exception e )
 		{
 			e.printStackTrace();
 			return;
+		}
+	}
+	private static void exportBoardToFile(ChunkData result, double minx, 
+			double maxx, double miny, double maxy, double step,
+			int rows, int cols)
+	{
+		try
+		{
+			PrintWriter out = new PrintWriter("data.txt");	
+			out.println("# Mandelbrot set for x = [" + minx + ", " 
+			+ maxx + "], y = [" + miny + ", " + maxy 
+			+ "], step = " + step);
+
+			double x_mult = (maxx - minx) / (cols - 1);
+			double y_mult = (maxy - miny) / (rows - 1);
+			System.out.println("Rows: " + rows + ", cols: " + cols);
+			for (int row = 0; row < rows; ++row) 
+			{
+				double y = y_mult * row + miny;
+				for (int col = 0; col < cols; ++col) 
+				{
+					double x = x_mult * col + minx;
+					out.println( x + "\t" + y + "\t" + result.mandelbrotValues[row][col]);
+				}
+				out.println();
+			}
+			out.close();
+		}catch(FileNotFoundException e)
+		{      
+			System.out.println(e);
 		}
 	}
 }

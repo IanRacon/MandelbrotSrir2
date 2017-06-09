@@ -1,4 +1,4 @@
-#include "MandelbrotTest.h"
+#include "MandelbrotImpl.h"
 #include <complex.h>
 #include <math.h>
 #include <stdlib.h>
@@ -54,7 +54,7 @@ static int **mandelbrot(double minx, double maxx, double miny, double maxy, doub
     return board;
 }
 
-JNIEXPORT jobjectArray JNICALL Java_MandelbrotTest_compute(JNIEnv *env, jobject obj) {
+JNIEXPORT jobjectArray JNICALL Java_MandelbrotImpl_compute(JNIEnv *env, jobject obj) {
     
     jclass mandelbrotClass = (*env)->GetObjectClass(env, obj);
     jclass intArray1DClass = (*env)->FindClass(env, "[I");

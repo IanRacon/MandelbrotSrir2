@@ -30,7 +30,7 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    */
     public ChunkData mandelbrot(ChunkCoords chunkParams) throws RemoteException
     {
-		MandelbrotTest man = new MandelbrotTest(chunkParams.x1, chunkParams.x2, chunkParams.y1, chunkParams.y2, chunkParams.step); 
+		MandelbrotImpl man = new MandelbrotImpl(chunkParams.x1, chunkParams.x2, chunkParams.y1, chunkParams.y2, chunkParams.step); 
 		ChunkData chunkData = new ChunkData();
         chunkData.mandelbrotValues = man.compute();
         return chunkData;
@@ -44,7 +44,7 @@ public class Server extends UnicastRemoteObject implements IMandelbrotResolver
    */
     static
     {   
-        System.loadLibrary("MandelbrotTest");
+        System.loadLibrary("MandelbrotImpl");
     }
 
 

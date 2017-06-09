@@ -10,6 +10,12 @@ class RemoteMandelbrot extends Thread
 	IMandelbrotResolver remoteMethod;
 	ChunkData chunkData;
 
+	/**
+	 * Constructs tread object that executes remote method call.
+	 * @param name Thread name
+	 * @param p_chunkParams Requested chunk parameters
+	 * @param p_remoteMethod Remote method object
+	 */
 	RemoteMandelbrot(String name, ChunkCoords p_chunkParams, IMandelbrotResolver p_remoteMethod)
 	{
 		threadName = name;
@@ -28,6 +34,9 @@ class RemoteMandelbrot extends Thread
 			System.out.println("Thread: " + threadName + " interrupted by exception: " + e);
 		}
 	}
+	/**
+	 * Returns result obtained from remote method call.
+	 */
 	public ChunkData getResults()
 	{
 		return chunkData;
@@ -74,19 +83,23 @@ public class Client
 				/* prepare "parameters" RMI argument object */
 
 			/*** Step 2:
-			   * Prepare ChunkCoords "parameters".
+			   * Prepare ChunkCoords "parameters" and threads for each of the remote objects.
 			   */
 			ChunkCoords chunkParams1 = new ChunkCoords(x1, x2, y1, (y1+y2)/2, step);
 			ChunkCoords chunkParams2 = new ChunkCoords(x1, x2, (y1+y2)/2 + step, y2, step);
 			RemoteMandelbrot remote1 = new RemoteMandelbrot("Remote-1", chunkParams1, remoteObj1);
 			RemoteMandelbrot remote2 = new RemoteMandelbrot("Remote-2", chunkParams2, remoteObj2);
+
 			/* execute RMI call */
 			/*** Step 3:
-			   * Call remote method of obj object. 
+			   * Start each thread that will call remote method.
 			   */
 			remote1.start();
 			remote2.start();
 
+			/***
+			 *	Wait for completed work from all threads.
+			 */
 			try
 			{
 				remote1.join();
@@ -96,11 +109,17 @@ public class Client
 				System.out.println(e);
 			}
 
+			/***
+			 * Obtain results from threads.
+			 */
 			int[][] results1 = remote1.getResults().mandelbrotValues;
 			int[][] results2 = remote2.getResults().mandelbrotValues;
 			System.out.println("Data from server 1: rows: " + results1.length + ", cols: " + results1[0].length);
 			System.out.println("Data from server 2: rows: " + results2.length + ", cols: " + results2[0].length);
 
+			/***
+			 * Join results.
+			 */
 			int[][] aggregatedResult = append(results1, results2);
 
 			/* print results from returned parameters object */
@@ -115,6 +134,14 @@ public class Client
 			return;
 		}
 	}
+	/**
+	 * Exports results to text file in format supported by gnuplot.
+	 *
+	 * @param result Data to export
+	 * @param rows Total rows
+	 * @param cols Total cols
+	 * @param step Mandelbrot resolution
+	 */
 	private static void exportBoardToFile(int[][] result, double minx, 
 			double maxx, double miny, double maxy, double step,
 			int rows, int cols)
@@ -145,6 +172,12 @@ public class Client
 			System.out.println(e);
 		}
 	}
+	/**
+	 * Joins together two 2D arrays by rows.
+	 * @param a First array
+	 * @param b Second array
+	 * @return Joined array
+	 */
 	private static int[][] append(int[][] a, int[][] b) 
 	{
 		int[][] result = new int[a.length + b.length][];

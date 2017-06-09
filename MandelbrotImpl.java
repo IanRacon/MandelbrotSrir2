@@ -1,5 +1,8 @@
 import java.util.Arrays;
 
+/**
+ * Test purpose class.
+ */
 public class MandelbrotImpl {
     
     private final double minx;

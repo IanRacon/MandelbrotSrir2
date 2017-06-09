@@ -3,14 +3,23 @@
 #include <math.h>
 #include <stdlib.h>
 
+/**
+ * Returns number of rows based on chunk parameters.
+ */
 static int getRows(double miny, double maxy, double step) {
     return floor((maxy - miny) / step) + 1;
 }
 
+/**
+ * Returns number of cols based on chunk parameters.
+ */
 static int getCols(double minx, double maxx, double step) {
     return floor((maxx - minx) / step) + 1;
 }
 
+/**
+ * Initializes 2D board.
+ */
 static int **initBoard(int rows, int cols) {
     int **board = (int**) malloc(rows * sizeof(int *));
     for (int i = 0; i < rows; ++i) {
@@ -19,6 +28,9 @@ static int **initBoard(int rows, int cols) {
     return board;
 }
 
+/**
+ * Frees 2D board.
+ */
 static void freeBoard(int **board, int rows) {
     for (int i = 0; i < rows; ++i) {
          free(board[i]);
@@ -26,6 +38,10 @@ static void freeBoard(int **board, int rows) {
     free(board);
 }
 
+/**
+ * Computes mandelbrot.
+ * @param maxiters Maximum iterations in one point.
+ */
 static int **mandelbrot(double minx, double maxx, double miny, double maxy, double step, int rows, int cols, int maxiters) {
 
     int **board = initBoard(rows, cols);
@@ -53,7 +69,9 @@ static int **mandelbrot(double minx, double maxx, double miny, double maxy, doub
     
     return board;
 }
-
+/**
+ * Implementation of JNI interface from MandelbrotImpl.h file (generatd by javah MandelbrotImpl).
+ * */
 JNIEXPORT jobjectArray JNICALL Java_MandelbrotImpl_compute(JNIEnv *env, jobject obj) {
     
     jclass mandelbrotClass = (*env)->GetObjectClass(env, obj);

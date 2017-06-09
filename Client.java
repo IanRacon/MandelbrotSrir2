@@ -51,23 +51,24 @@ public class Client
 			chunkParams1.x2 = x2;
 			chunkParams1.y2 = y2;
 			chunkParams1.step = step;
-/*
+
 			ChunkCoords chunkParams2 = new ChunkCoords();
 			chunkParams2.x1 = (x2-x1)/2;
 			chunkParams2.y1 = y1;
 			chunkParams2.x2 = x2;
 			chunkParams2.y2 = y2;
 			chunkParams2.step = step;
-*/
+
 			/* execute RMI call */
 			/*** Step 3:
 			   * Call remote method of obj object. 
 			   */
 			ChunkData result1;
-//			ChunkData result2;
+			ChunkData result2;
 			result1 = remoteObj1.mandelbrot(chunkParams1);
-//			result2 = remoteObj2.mandelbrot(chunkParams2);
+			result2 = remoteObj2.mandelbrot(chunkParams2);
 
+			int[][] result = append(result1.mandelbrotValues, result2.mandelbrotValues);
 			/* print results from returned parameters object */
 			/*** Step 4:
 			   * Print results obtained by RMI.
@@ -113,4 +114,11 @@ public class Client
 			System.out.println(e);
 		}
 	}
+	private static int[][] append(int[][] a, int[][] b) 
+	{
+		int[][] result = new int[a.length + b.length][];
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		return result;
+    	}	
 }
